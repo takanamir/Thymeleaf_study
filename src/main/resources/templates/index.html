@@ -1,12 +1,12 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Top page</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+<title>Top page</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
 </head>
 <body>
-	<h1>Hello page</h1>
-	<p th:text="${new java.util.Date().toString()}"></p>
+	<h1 th:text="#{content.title}">Hello page</h1>
+	<p th:utext="${msg}">message.</p>
 </body>
 </html>
