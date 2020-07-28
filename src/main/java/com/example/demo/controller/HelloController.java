@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -20,23 +20,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.demo.dao.MyDataDaoImpl;
+import com.example.demo.bean.MyDataBean;
 import com.example.demo.entity.MyData;
 import com.example.demo.repository.MyDataRepository;
+import com.example.demo.service.MyDataService;
 
 @Controller
 public class HelloController {
 	@Autowired
 	MyDataRepository repository;
 
-	@PersistenceContext
-	EntityManager entityManager;
+	@Autowired
+	private MyDataService service;
 
-	MyDataDaoImpl dao;
+	@Autowired
+	MyDataBean myDataBean;
 
 	@PostConstruct
 	public void init() {
-		dao = new MyDataDaoImpl(entityManager);
 		MyData d1 = new MyData();
 		d1.setName("山田太郎");
 		d1.setAge(52);
@@ -59,13 +60,23 @@ public class HelloController {
 		d3.setMemo("my work friend...");
 		repository.saveAndFlush(d3);
 	}
-
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView index(ModelAndView mav) {
+	
+	@RequestMapping(value = "/page", method = RequestMethod.GET)
+	public ModelAndView index(ModelAndView mav, Pageable pageable) {
 		mav.setViewName("index");
-		mav.addObject("title", "Find Page");
-		mav.addObject("msg", "MyDataのサンプルです。");
-		Iterable<MyData> list = repository.findAllOrderByName();
+		mav.addObject("title","Find Page");
+		mav.addObject("msg","MyDataのサンプルです。");
+		Page<MyData> list = repository.findAll(pageable);
+		mav.addObject("datalist", list);
+		return mav;
+	}
+	
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public ModelAndView home(@ModelAttribute("formModel") MyData mydata, ModelAndView mav) {
+		mav.setViewName("index2");
+		mav.addObject("msg", "This is sample content.");
+		mav.addObject("formModel", mydata);
+		Iterable<MyData> list = repository.findAll();
 		mav.addObject("datalist", list);
 		return mav;
 	}
@@ -79,13 +90,23 @@ public class HelloController {
 			repository.saveAndFlush(mydata);
 			res = new ModelAndView("redirect:/");
 		} else {
-			mov.setViewName("index");
+			mov.setViewName("index2");
 			mov.addObject("msg", "sorry, error is occured...");
 			Iterable<MyData> list = repository.findAll();
 			mov.addObject("datalist", list);
 			res = mov;
 		}
 		return res;
+	}
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public ModelAndView indexById(@PathVariable long id, ModelAndView mav) {
+		mav.setViewName("pickup");
+		mav.addObject("title", "Pickup Page");
+		String table = "<table>" + myDataBean.getTableTagById(id) + "</table>";
+		mav.addObject("msg", "pickup data id = " + id);
+		mav.addObject("data", table);
+		return mav;
 	}
 
 	@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
@@ -126,7 +147,7 @@ public class HelloController {
 		mav.addObject("title", "Find Page");
 		mav.addObject("msg", "MyDataのサンプルです。");
 		mav.addObject("value", "");
-		Iterable<MyData> list = dao.getAll();
+		List<MyData> list = service.getAll();
 		mav.addObject("datalist", list);
 		return mav;
 	}
@@ -141,7 +162,7 @@ public class HelloController {
 			mav.addObject("title", "Find result");
 			mav.addObject("msg", "「" + param + "」の検索結果");
 			mav.addObject("value", param);
-			List<MyData> list = dao.find(param);
+			List<MyData> list = service.find(param);
 			mav.addObject("datalist", list);
 		}
 		return mav;

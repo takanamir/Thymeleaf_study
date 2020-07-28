@@ -17,7 +17,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "msgdata")
 public class MsgData {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column
