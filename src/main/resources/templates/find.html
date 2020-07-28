@@ -1,13 +1,27 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Top page</title>
+	<title>Find page</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
 </head>
 <body>
-	<h1 th:text="#{content.title}">Hello page</h1>
+	<h1 th:text="${title}">Find page</h1>
 	<p th:text="${msg}"></p>
+	<table>
+		<form action="/find" method="post">
+			<tr>
+				<td>FIND:</td>
+				<td><input type="text" name="fstr" size="20"
+					th:value="${value}" /></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><button type="submit">検索</button></td>
+			</tr>
+		</form>
+	</table>
+	<hr />
 	<table>
 		<tr>
 			<th>ID</th>
@@ -15,7 +29,6 @@
 			<th>電話番号</th>
 			<th>メール</th>
 			<th>年齢</th>
-			<th>メモ</th>
 		</tr>
 		<tr th:each="obj : ${datalist}">
 			<td th:text="${obj.id}"></td>
@@ -23,7 +36,6 @@
 			<td th:text="${obj.phoneNumber}"></td>
 			<td th:text="${obj.mail}"></td>
 			<td th:text="${obj.age}"></td>
-			<td th:text="${obj.memo}"></td>
 		</tr>
 	</table>
 </body>

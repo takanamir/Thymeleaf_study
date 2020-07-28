@@ -1,10 +1,9 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Top page</title>
+	<title>Edit page</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
-	<style th:include="part :: frag_style"></style>
 </head>
 <body>
 	<h1 th:text="${title}">Edit page</h1>
@@ -33,7 +32,7 @@
 			</tr>
 			<tr>
 				<td></td>
-				<td><button type="submit" />編集</button><button th:href="@{/}">戻る</button></td>
+				<td><button type="submit">編集</button><button th:href="@{/}">戻る</button></td>
 			</tr>
 		</form>
 	</table>

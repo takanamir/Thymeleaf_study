@@ -1,8 +1,12 @@
 package com.example.demo.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.example.demo.dao.MyDataDaoImpl;
 import com.example.demo.entity.MyData;
 import com.example.demo.repository.MyDataRepository;
 
@@ -24,11 +29,17 @@ public class HelloController {
 	@Autowired
 	MyDataRepository repository;
 
+	@PersistenceContext
+	EntityManager entityManager;
+
+	MyDataDaoImpl dao;
+
 	@PostConstruct
 	public void init() {
+		dao = new MyDataDaoImpl(entityManager);
 		MyData d1 = new MyData();
 		d1.setName("山田太郎");
-		d1.setAge(123);
+		d1.setAge(52);
 		d1.setPhoneNumber("090-999-999");
 		d1.setMail("taro@yamada.com");
 		d1.setMemo("this is my data!");
@@ -50,11 +61,11 @@ public class HelloController {
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView index(@ModelAttribute("formModel") MyData mydata, ModelAndView mav) {
+	public ModelAndView index(ModelAndView mav) {
 		mav.setViewName("index");
-		mav.addObject("msg", "This is sample content.");
-		mav.addObject("formModel", mydata);
-		Iterable<MyData> list = repository.findAll();
+		mav.addObject("title", "Find Page");
+		mav.addObject("msg", "MyDataのサンプルです。");
+		Iterable<MyData> list = repository.findAllOrderByName();
 		mav.addObject("datalist", list);
 		return mav;
 	}
@@ -107,5 +118,32 @@ public class HelloController {
 	public ModelAndView remove(@RequestParam long id, ModelAndView mav) {
 		repository.deleteById(id);
 		return new ModelAndView("redirect:/");
+	}
+
+	@RequestMapping(value = "/find", method = RequestMethod.GET)
+	public ModelAndView find(ModelAndView mav) {
+		mav.setViewName("find");
+		mav.addObject("title", "Find Page");
+		mav.addObject("msg", "MyDataのサンプルです。");
+		mav.addObject("value", "");
+		Iterable<MyData> list = dao.getAll();
+		mav.addObject("datalist", list);
+		return mav;
+	}
+
+	@RequestMapping(value = "/find", method = RequestMethod.POST)
+	public ModelAndView search(HttpServletRequest request, ModelAndView mav) {
+		mav.setViewName("find");
+		String param = request.getParameter("fstr");
+		if (param == "") {
+			mav = new ModelAndView("redirect:/find");
+		} else {
+			mav.addObject("title", "Find result");
+			mav.addObject("msg", "「" + param + "」の検索結果");
+			mav.addObject("value", param);
+			List<MyData> list = dao.find(param);
+			mav.addObject("datalist", list);
+		}
+		return mav;
 	}
 }

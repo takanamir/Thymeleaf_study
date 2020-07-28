@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
@@ -16,6 +18,7 @@ import com.example.demo.validator.Phone;
 
 @Entity
 @Table(name = "mydata")
+@NamedQuery(name = "findByAge", query = "from MyData where age > :min and age < :max")
 public class MyData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,7 +29,7 @@ public class MyData {
 	@Column(length = 50, nullable = false)
 	@NotEmpty
 	private String name;
-	
+
 	@Column(nullable = true)
 	@Phone
 	private String phoneNumber;

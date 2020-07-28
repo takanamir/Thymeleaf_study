@@ -1,10 +1,9 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Top page</title>
+	<title>Delete page</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
-	<style th:include="part :: frag_style"></style>
 </head>
 <body>
 	<h1 th:text="${title}">Delete page</h1>
@@ -27,7 +26,7 @@
 				<td><p th:text="*{memo}"></p></td>
 			</tr>
 			<tr>
-				<td><button type="submit" value="delete" />削除</button><button th:href="@{/}">戻る</button></td>
+				<td><button type="submit" value="delete">削除</button><button th:href="@{/}">戻る</button></td>
 			</tr>
 		</form>
 	</table>
