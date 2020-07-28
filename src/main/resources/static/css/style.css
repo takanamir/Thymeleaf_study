@@ -25,3 +25,8 @@ td {
 	color: black;
 	background: #f0f0f0;
 }
+
+pre {
+	border: solid 3px #ddd;
+	padding: 10px;
+}
