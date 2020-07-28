@@ -1,12 +1,15 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Top page</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+	<title>Top page</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+	<style th:include="part :: frag_style"></style>
 </head>
 <body>
 	<h1 th:text="#{content.title}">Hello page</h1>
-	<p th:utext="${msg}">message.</p>
+	<div th:include="part :: frag_body">
+		<p>This is orginal content.</p>
+	</div>
 </body>
 </html>
